@@ -105,6 +105,7 @@ enum AttrTypes_t {
 	ATTR_MANALEECH = 39,
 	ATTR_REFLECT = 40,
 	ATTR_MOMENTUM = 41,
+	ATTR_CRITICALDAMAGE = 42,
 };
 
 enum Attr_ReadValue {
@@ -609,7 +610,13 @@ class Item : virtual public Thing
 			}
 			return items[id].criticalHitChance;
 		}
-		int32_t getDodgeChance() const {
+		int32_t getCriticalDamage() const {
+			if (hasAttribute(ITEM_ATTRIBUTE_CRITICALDAMAGE)) {
+				return getIntAttr(ITEM_ATTRIBUTE_CRITICALDAMAGE);
+			}
+			return items[id].criticalDamage;
+		}
+		int32_t getDodgeChance() {
 			if (hasAttribute(ITEM_ATTRIBUTE_DODGECHANCE)) {
 				return getIntAttr(ITEM_ATTRIBUTE_DODGECHANCE);
 			}
