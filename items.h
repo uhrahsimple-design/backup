@@ -219,6 +219,7 @@ class ItemType
 		int32_t defense;
 		int32_t extraDefense;
 		int32_t criticalHitChance;
+		int32_t criticalDamage;
 		int32_t dodgeChance;
 		int32_t lifeAbsorb;
 		int32_t manaAbsorb;
