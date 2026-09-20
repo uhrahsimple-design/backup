@@ -226,6 +226,7 @@ class ItemType
 		int32_t manaLeech;
 		int32_t reflect;
 		int32_t momentum;
+		int32_t criticalDamage;
 		int32_t armor;
 		int32_t rotateTo;
 		int32_t runeMagLevel;
