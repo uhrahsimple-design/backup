@@ -3482,8 +3482,30 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		// Shield Reflect is calculated exclusively from the equipped shield.
 		// The guard prevents reflected damage from triggering another Reflect.
 		static thread_local bool applyingReflectDamage = false;
+		bool criticalHit = false;
+		bool criticalDamageHit = false;
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
+
+		if (!applyingReflectDamage && attackerPlayer && attacker != target && damage.origin != ORIGIN_NONE) {
+			const int32_t criticalHitChance = std::min<int32_t>(100, std::max<int32_t>(0, attackerPlayer->getCriticalHitChance()));
+			if (criticalHitChance > 0 && normal_random(1, 100) <= criticalHitChance) {
+				criticalHit = true;
+				int32_t criticalDamage = 0;
+				for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+					Item* item = attackerPlayer->getInventoryItem(static_cast<slots_t>(slot));
+					if (item) {
+						criticalDamage += item->getCriticalDamage();
+					}
+				}
+				criticalDamage = std::min<int32_t>(100, std::max<int32_t>(0, criticalDamage));
+				if (criticalDamage > 0) {
+					criticalDamageHit = true;
+					damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value * (criticalDamage / 100.0)));
+					damage.secondary.value = static_cast<int32_t>(std::round(damage.secondary.value * (criticalDamage / 100.0)));
+				}
+			}
+		}
 
 		int32_t healthChange = damage.primary.value + damage.secondary.value;
 		if (healthChange == 0) {
@@ -3587,7 +3609,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					combatChangeHealth(target, attacker, reflectDamage);
 					applyingReflectDamage = false;
 
-					addMagicEffect(target->getPosition(), 39);
+					addMagicEffect(target->getPosition(), CONST_ME_REFLECT);
                     addAnimatedText("REFLECT " + std::to_string(reflectedDamage), attacker->getPosition(), TEXTCOLOR_YELLOW);
 				}
 			}
@@ -3639,6 +3661,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			map.getSpectators(list, targetPos, true, true);
 		}
 		addCreatureHealth(list, target);
+
+		if (criticalHit) {
+			addMagicEffect(list, targetPos, criticalDamageHit ? CONST_ME_CRITICAL_DAMAGE : CONST_ME_CRITICAL);
+		}
 
 		message.primary.value = damage.primary.value;
 		message.secondary.value = damage.secondary.value;
