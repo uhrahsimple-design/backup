@@ -105,6 +105,7 @@ enum AttrTypes_t {
 	ATTR_MANALEECH = 39,
 	ATTR_REFLECT = 40,
 	ATTR_MOMENTUM = 41,
+	ATTR_CRITICALDAMAGE = 42,
 };
 
 enum Attr_ReadValue {
@@ -293,7 +294,7 @@ class ItemAttributes
 
 	public:
 		inline static bool isIntAttrType(itemAttrTypes type) {
-			return (type & 0x1FFFFE13) != 0;
+			return (type & 0x9FFFFE13U) != 0;
 		}
 		inline static bool isStrAttrType(itemAttrTypes type) {
 			return (type & 0x1EC) != 0;
@@ -650,6 +651,12 @@ class Item : virtual public Thing
 				return getIntAttr(ITEM_ATTRIBUTE_MOMENTUM);
 			}
 			return items[id].momentum;
+		}
+		int32_t getCriticalDamage() const {
+			if (hasAttribute(ITEM_ATTRIBUTE_CRITICALDAMAGE)) {
+				return getIntAttr(ITEM_ATTRIBUTE_CRITICALDAMAGE);
+			}
+			return items[id].criticalDamage;
 		}
 		int32_t getSlotPosition() const {
 			return items[id].slotPosition;
