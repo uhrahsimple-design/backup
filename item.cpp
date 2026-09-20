@@ -601,6 +601,15 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
+		case ATTR_CRITICALDAMAGE: {
+			int32_t value;
+			if (!propStream.read<int32_t>(value)) {
+				return ATTR_READ_ERROR;
+			}
+			setIntAttr(ITEM_ATTRIBUTE_CRITICALDAMAGE, value);
+			break;
+		}
+
 		case ATTR_ATTACK: {
 			int32_t attack;
 			if (!propStream.read<int32_t>(attack)) {
@@ -850,6 +859,11 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	if (hasAttribute(ITEM_ATTRIBUTE_MOMENTUM)) {
 		propWriteStream.write<uint8_t>(ATTR_MOMENTUM);
 		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_MOMENTUM));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_CRITICALDAMAGE)) {
+		propWriteStream.write<uint8_t>(ATTR_CRITICALDAMAGE);
+		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_CRITICALDAMAGE));
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {
