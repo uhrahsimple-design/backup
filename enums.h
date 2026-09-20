@@ -97,6 +97,7 @@ enum itemAttrTypes : uint32_t {
 	ITEM_ATTRIBUTE_MANALEECH = 1 << 28,
 	ITEM_ATTRIBUTE_REFLECT = 1 << 29,
 	ITEM_ATTRIBUTE_MOMENTUM = 1 << 30,
+	ITEM_ATTRIBUTE_CRITICALDAMAGE = 1U << 31,
 };
 
 enum VipStatus_t : uint8_t {
