@@ -3485,6 +3485,26 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
 
+		if (!applyingReflectDamage && attackerPlayer && attacker != target && damage.origin != ORIGIN_NONE &&
+			(targetPlayer || target->getMonster())) {
+			const int32_t criticalHitChance = std::min<int32_t>(100, std::max<int32_t>(0, attackerPlayer->getCriticalHitChance()));
+			if (criticalHitChance > 0 && normal_random(1, 100) <= criticalHitChance) {
+				int32_t criticalDamage = 0;
+				for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+					Item* item = attackerPlayer->getInventoryItem(static_cast<slots_t>(slot));
+					if (item) {
+						criticalDamage += item->getCriticalDamage();
+					}
+				}
+
+				criticalDamage = std::min<int32_t>(100, std::max<int32_t>(0, criticalDamage));
+				if (criticalDamage > 0) {
+					damage.primary.value = static_cast<int32_t>(damage.primary.value * criticalDamage / 100.0);
+					damage.secondary.value = static_cast<int32_t>(damage.secondary.value * criticalDamage / 100.0);
+				}
+			}
+		}
+
 		int32_t healthChange = damage.primary.value + damage.secondary.value;
 		if (healthChange == 0) {
 			return true;
