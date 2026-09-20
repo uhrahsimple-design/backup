@@ -38,7 +38,7 @@ ItemType::ItemType() :
 	stackable(false), isAnimation(false), weight(0), levelDoor(0), decayTime(0),
 	wieldInfo(0), minReqLevel(0), minReqMagicLevel(0), charges(0), maxHitChance(-1),
 	decayTo(-1), attack(0), defense(0), extraDefense(0), criticalHitChance(0), dodgeChance(0),
-	lifeAbsorb(0), manaAbsorb(0), lifeLeech(0), manaLeech(0), reflect(0), momentum(0), armor(0), rotateTo(0),
+	lifeAbsorb(0), manaAbsorb(0), lifeLeech(0), manaLeech(0), reflect(0), momentum(0), criticalDamage(0), armor(0), rotateTo(0),
 	runeMagLevel(0), runeLevel(0), combatType(COMBAT_NONE), transformToOnUse(),
 	transformToFree(0), destroyTo(0), maxTextLen(0), writeOnceItemId(0),
 	transformEquipTo(0), transformDeEquipTo(0), maxItems(8), slotPosition(SLOTP_HAND),
@@ -459,6 +459,8 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 			it.reflect = pugi::cast<int32_t>(valueAttribute.value());
 		} else if (tmpStrValue == "momentum") {
 			it.momentum = pugi::cast<int32_t>(valueAttribute.value());
+		} else if (tmpStrValue == "criticaldamage") {
+			it.criticalDamage = pugi::cast<int32_t>(valueAttribute.value());
 		} else if (tmpStrValue == "attack") {
 			it.attack = pugi::cast<int32_t>(valueAttribute.value());
 		} else if (tmpStrValue == "rotateto") {
